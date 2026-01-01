@@ -1,6 +1,7 @@
 import "./globals.css";
 import MainHeader from "./components/main-header/main-header";
 import Footer from "./components/footer/footer";
+import ScrollToTop from "./components/common/scroll-to-top";
 import SessionProviderWrapper from "../../lib/providers/sessionProviderWrapper";
 import ReactQueryProvider from "../../lib/providers/reactQueryProvider";
 import { ToastProvider } from "@/components/ui/toast";
@@ -105,6 +106,7 @@ export default function RootLayout({ children, session }: RootLayoutProps) {
                             <MainHeader />
                             <main className="flex-grow">{children}</main>
                             <Footer />
+                            <ScrollToTop />
                         </div>
                     </ReactQueryProvider>
                 </SessionProviderWrapper>
