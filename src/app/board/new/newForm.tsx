@@ -38,15 +38,8 @@ export default function NewBoardForm() {
             });
 
             if (!res.ok) {
-                const result = await res.json() as { error?: string; message?: string };
-                const msg =
-                    result.error ||
-                    result.message ||
-                    "서버 에러가 발생했습니다.";
                 if (res.status === 401) {
-                    toast.error("인증 필요", {
-                        description: result.error || "로그인이 필요합니다.",
-                    });
+                    toast.error("로그인이 필요합니다");
                     router.push(
                         `/auth/login?redirect=${encodeURIComponent(
                             window.location.pathname
@@ -54,7 +47,8 @@ export default function NewBoardForm() {
                     );
                     return;
                 }
-                throw new Error(msg);
+                toast.error("등록 실패");
+                return;
             }
 
             toast.success("게시글 등록 완료", {
@@ -62,10 +56,7 @@ export default function NewBoardForm() {
             });
             router.push("/board");
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다.";
-            toast.error("등록 실패", {
-                description: errorMessage,
-            });
+            toast.error("등록 실패");
         }
     };
 
@@ -218,5 +209,3 @@ export default function NewBoardForm() {
         </main>
     );
 }
-
-

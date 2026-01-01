@@ -57,11 +57,8 @@ export default function DeleteButton({
                         // 서버 컴포넌트를 다시 렌더링하여 댓글 목록 갱신
                         router.refresh();
                     },
-                    onError: (error) => {
-                        const errorMessage = (error as AxiosError & { userMessage?: string }).userMessage || "댓글 삭제에 실패했습니다.";
-                        toast.error("삭제 실패", {
-                            description: errorMessage,
-                        });
+                    onError: error => {
+                        toast.error("삭제 실패");
                     },
                 });
             } else if (postId) {
@@ -76,11 +73,8 @@ export default function DeleteButton({
                             router.refresh();
                         }
                     },
-                    onError: (error) => {
-                        const errorMessage = (error as AxiosError & { userMessage?: string }).userMessage || "게시글 삭제에 실패했습니다.";
-                        toast.error("삭제 실패", {
-                            description: errorMessage,
-                        });
+                    onError: error => {
+                        toast.error("삭제 실패");
                     },
                 });
             } else if (isGallery && galleryId) {
@@ -95,11 +89,8 @@ export default function DeleteButton({
                             router.refresh();
                         }
                     },
-                    onError: (error) => {
-                        const errorMessage = (error as AxiosError & { userMessage?: string }).userMessage || "갤러리 항목 삭제에 실패했습니다.";
-                        toast.error("삭제 실패", {
-                            description: errorMessage,
-                        });
+                    onError: error => {
+                        toast.error("삭제 실패");
                     },
                 });
             } else if (apiPath) {
@@ -115,17 +106,11 @@ export default function DeleteButton({
                         router.refresh();
                     }
                 } else {
-                    const errorData = await res.json().catch(() => ({})) as { error?: string; message?: string };
-                    toast.error("삭제 실패", {
-                        description: errorData.error || errorData.message || "삭제에 실패했습니다.",
-                    });
+                    toast.error("삭제 실패");
                 }
             }
         } catch (error) {
-            const errorMessage = (error as AxiosError & { userMessage?: string }).userMessage || "오류가 발생했습니다.";
-            toast.error("삭제 실패", {
-                description: errorMessage,
-            });
+            toast.error("삭제 실패");
         }
     };
 
@@ -160,5 +145,3 @@ export default function DeleteButton({
         </button>
     );
 }
-
-

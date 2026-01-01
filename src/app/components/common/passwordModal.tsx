@@ -46,9 +46,7 @@ export default function PasswordModal({ postId, onClose, onSuccess }: PasswordMo
                     onSuccess();
                 },
                 onError: (error) => {
-                    const axiosError = error as AxiosError<{ error?: string }> & { userMessage?: string };
-                    const errorMessage = axiosError.userMessage || axiosError.response?.data?.error || "비밀번호 인증 실패";
-                    setError(errorMessage);
+                    setError("비밀번호가 일치하지 않습니다");
                 },
             }
         );

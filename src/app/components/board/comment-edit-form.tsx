@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import type { CommentWithAuthor } from "@/lib/types/api.types";
-import type { AxiosError } from "axios";
 
 interface CommentEditFormProps {
     comment: CommentWithAuthor;
@@ -15,7 +14,11 @@ interface CommentEditFormProps {
     onSuccess?: () => void;
 }
 
-export default function CommentEditForm({ comment, onCancel, onSuccess }: CommentEditFormProps) {
+export default function CommentEditForm({
+    comment,
+    onCancel,
+    onSuccess,
+}: CommentEditFormProps) {
     const router = useRouter();
     const [content, setContent] = useState(comment.content);
     const updateComment = useUpdateComment();
@@ -41,12 +44,8 @@ export default function CommentEditForm({ comment, onCancel, onSuccess }: Commen
                     router.refresh();
                     onSuccess?.();
                 },
-                onError: (error) => {
-                    const axiosError = error as AxiosError<{ error?: string }> & { userMessage?: string };
-                    const errorMessage = axiosError.userMessage || axiosError.response?.data?.error || "댓글 수정에 실패했습니다.";
-                    toast.error("수정 실패", {
-                        description: errorMessage,
-                    });
+                onError: () => {
+                    toast.error("수정 실패");
                 },
             }
         );
@@ -88,4 +87,3 @@ export default function CommentEditForm({ comment, onCancel, onSuccess }: Commen
         </form>
     );
 }
-

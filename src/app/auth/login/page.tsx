@@ -50,10 +50,7 @@ export default function LoginPage() {
                 router.push("/");
             }
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : "이메일 또는 비밀번호를 확인해주세요.";
-            toast.error("로그인 실패", {
-                description: errorMessage,
-            });
+            toast.error("로그인 실패");
         }
     };
 
@@ -110,5 +107,3 @@ export default function LoginPage() {
         </div>
     );
 }
-
-

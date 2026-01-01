@@ -42,17 +42,8 @@ export default function EditBoardForm({ post }: EditBoardFormProps) {
             });
 
             if (!res.ok) {
-                const result = await res.json() as { error?: string; message?: string; issues?: Array<{ path: string; message: string }> };
-                let msg = result.error || result.message || "서버 에러가 발생했습니다.";
-                
-                if (result.issues && result.issues.length > 0) {
-                    msg = result.issues[0].message;
-                }
-
                 if (res.status === 401) {
-                    toast.error("인증 필요", {
-                        description: result.error || "로그인이 필요합니다.",
-                    });
+                    toast.error("로그인이 필요합니다");
                     router.push(
                         `/auth/login?redirect=${encodeURIComponent(
                             window.location.pathname
@@ -60,7 +51,8 @@ export default function EditBoardForm({ post }: EditBoardFormProps) {
                     );
                     return;
                 }
-                throw new Error(msg);
+                toast.error("수정 실패");
+                return;
             }
 
             toast.success("게시글 수정 완료", {
@@ -68,10 +60,7 @@ export default function EditBoardForm({ post }: EditBoardFormProps) {
             });
             router.push(`/board/${post.id}`);
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다.";
-            toast.error("수정 실패", {
-                description: errorMessage,
-            });
+            toast.error("수정 실패");
         }
     };
 
@@ -82,10 +71,7 @@ export default function EditBoardForm({ post }: EditBoardFormProps) {
             noValidate
         >
             <div>
-                <label
-                    htmlFor="title"
-                    className="block mb-1 font-semibold"
-                >
+                <label htmlFor="title" className="block mb-1 font-semibold">
                     제목
                 </label>
                 <input
@@ -109,10 +95,7 @@ export default function EditBoardForm({ post }: EditBoardFormProps) {
             </div>
 
             <div>
-                <label
-                    htmlFor="content"
-                    className="block mb-1 font-semibold"
-                >
+                <label htmlFor="content" className="block mb-1 font-semibold">
                     글 내용
                 </label>
                 <textarea
@@ -141,10 +124,7 @@ export default function EditBoardForm({ post }: EditBoardFormProps) {
                     {...register("isSecret")}
                     disabled={isSubmitting}
                 />
-                <label
-                    htmlFor="isSecret"
-                    className="font-semibold select-none"
-                >
+                <label htmlFor="isSecret" className="font-semibold select-none">
                     비밀글로 설정
                 </label>
             </div>
@@ -164,7 +144,11 @@ export default function EditBoardForm({ post }: EditBoardFormProps) {
                                 ? "border-red-500 focus:ring-red-500"
                                 : "border-gray-300 focus:ring-blue-400 focus:ring-2"
                         }`}
-                        placeholder={post.is_secret ? "비밀번호를 변경하려면 입력하세요" : "비밀번호를 입력하세요"}
+                        placeholder={
+                            post.is_secret
+                                ? "비밀번호를 변경하려면 입력하세요"
+                                : "비밀번호를 입력하세요"
+                        }
                         {...register("password")}
                         disabled={isSubmitting}
                         autoComplete="new-password"
@@ -196,5 +180,3 @@ export default function EditBoardForm({ post }: EditBoardFormProps) {
         </form>
     );
 }
-
-

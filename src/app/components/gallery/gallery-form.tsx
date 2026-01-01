@@ -105,7 +105,7 @@ export default function GalleryForm({ initialData = null, onSubmitHandler, onCan
             await onSubmitHandler(formData);
             setMessage("완료되었습니다.");
         } catch (error) {
-            setMessage("문제가 발생했습니다. 다시 시도해주세요.");
+            setMessage("문제가 발생했습니다.");
             console.error(error);
         } finally {
             setIsSubmitting(false);

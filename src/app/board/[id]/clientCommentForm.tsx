@@ -3,10 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { commentSchema } from "../../../../lib/validation";
-import { ZodError } from "zod";
 import { useCreateComment } from "@/lib/hooks/useComments";
 import { toast } from "sonner";
-import type { AxiosError } from "axios";
 
 interface ClientCommentFormProps {
     postId: number;
@@ -24,17 +22,7 @@ export default function ClientCommentForm({ postId }: ClientCommentFormProps) {
         try {
             commentSchema.parse({ postId, content });
         } catch (error) {
-            if (error instanceof ZodError && error.issues) {
-                toast.error("입력 오류", {
-                    description:
-                        error.issues[0]?.message ||
-                        "입력값이 올바르지 않습니다.",
-                });
-                return;
-            }
-            toast.error("오류 발생", {
-                description: "알 수 없는 오류가 발생했습니다.",
-            });
+            toast.error("입력 오류");
             return;
         }
 
@@ -49,12 +37,8 @@ export default function ClientCommentForm({ postId }: ClientCommentFormProps) {
                     // 서버 컴포넌트를 다시 렌더링하여 댓글 목록 갱신
                     router.refresh();
                 },
-                onError: (error) => {
-                    const axiosError = error as AxiosError & { userMessage?: string };
-                    const errorMessage = axiosError.userMessage || "댓글 등록에 실패했습니다. 다시 시도해주세요.";
-                    toast.error("댓글 등록 실패", {
-                        description: errorMessage,
-                    });
+                onError: () => {
+                    toast.error("댓글 등록 실패");
                 },
             }
         );
@@ -98,5 +82,3 @@ export default function ClientCommentForm({ postId }: ClientCommentFormProps) {
         </form>
     );
 }
-
-

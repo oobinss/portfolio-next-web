@@ -38,7 +38,7 @@ export default function SignUpPage() {
                 body: JSON.stringify(data),
             });
             if (!res.ok) {
-                const errorData = await res.json() as { message?: string };
+                const errorData = (await res.json()) as { message?: string };
                 throw new Error(errorData.message || "회원가입 실패");
             }
 
@@ -47,10 +47,7 @@ export default function SignUpPage() {
             });
             router.push("/auth/login");
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : "회원가입 중 오류가 발생했습니다.";
-            toast.error("회원가입 실패", {
-                description: errorMessage,
-            });
+            toast.error("회원가입 실패");
         }
     };
 
@@ -62,7 +59,8 @@ export default function SignUpPage() {
                         회원가입
                     </CardTitle>
                     <CardDescription className="text-stone-600">
-                        Portfolio Project 회원이 되어 다양한 서비스를 이용해보세요
+                        Portfolio Project 회원이 되어 다양한 서비스를
+                        이용해보세요
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -137,5 +135,3 @@ export default function SignUpPage() {
         </div>
     );
 }
-
-
