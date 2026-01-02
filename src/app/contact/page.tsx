@@ -23,9 +23,12 @@ export default function ContactPage() {
         handleSubmit,
         formState: { errors, isSubmitting },
         reset,
+        setValue,
     } = useForm<InquiryFormData>({
         resolver: zodResolver(inquirySchema),
     });
+
+    const phoneRegister = register("phone");
 
     const onSubmit = async (data: InquiryFormData) => {
         // API 호출 로직
@@ -98,10 +101,26 @@ export default function ContactPage() {
                         />
                         <ValidatedInput
                             label="연락처"
-                            type="text"
-                            registerReturn={register("phone")}
+                            type="tel"
+                            registerReturn={{
+                                ...phoneRegister,
+                                onBlur: async e => {
+                                    // 기존 onBlur 먼저 실행
+                                    if (phoneRegister.onBlur) {
+                                        await phoneRegister.onBlur(e);
+                                    }
+                                    // 입력이 끝났을 때 하이픈 및 모든 비숫자 문자 제거
+                                    const numbersOnly = e.target.value.replace(
+                                        /[^0-9]/g,
+                                        ""
+                                    );
+                                    setValue("phone", numbersOnly, {
+                                        shouldValidate: true,
+                                    });
+                                },
+                            }}
                             error={errors.phone}
-                            placeholder="연락처를 입력해주세요"
+                            placeholder="010-1234-1234 또는 01012341234"
                         />
                         <ValidatedInput
                             label="이메일"
@@ -132,5 +151,3 @@ export default function ContactPage() {
         </div>
     );
 }
-
-

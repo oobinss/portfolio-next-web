@@ -18,8 +18,15 @@ export const signUpSchema = z
             .min(1, "이름을 입력해주세요.")
             .max(10, "이름은 10자 이하여야 합니다."),
         phone: z
-            .string()
-            .regex(/^[0-9]{9,15}$/, "휴대폰번호를 올바르게 입력해주세요.")
+            .union([z.string(), z.undefined()])
+            .transform((val) => {
+                if (!val || val.trim() === "") return undefined;
+                return val.replace(/[^0-9]/g, ""); // 하이픈 및 모든 비숫자 문자 제거
+            })
+            .refine(
+                (val) => !val || /^[0-9]{9,15}$/.test(val),
+                { message: "휴대폰번호를 올바르게 입력해주세요." }
+            )
             .optional(),
         nickname: z
             .string()
@@ -71,7 +78,8 @@ export const inquirySchema = z.object({
         .max(20, "성함은 20자 이하로 입력해주세요."),
     phone: z
         .string()
-        .regex(/^[0-9]{9,15}$/, "휴대폰번호를 올바르게 입력해주세요."),
+        .transform((val) => val?.replace(/[^0-9]/g, "") || "") // 하이픈 및 모든 비숫자 문자 제거
+        .pipe(z.string().regex(/^[0-9]{9,15}$/, "휴대폰번호를 올바르게 입력해주세요.")),
     email: z.string().email({ message: "이메일 형식이 올바르지 않습니다." }),
     message: z
         .string()
