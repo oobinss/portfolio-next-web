@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { toast } from "sonner";
 import type { z } from "zod";
+import { createPhoneRegister } from "../../../../lib/utils/formHelpers";
 
 type SignUpFormData = z.infer<typeof signUpSchema>;
 
@@ -30,8 +31,6 @@ export default function SignUpPage() {
         resolver: zodResolver(signUpSchema),
         mode: "onBlur",
     });
-
-    const phoneRegister = register("phone");
 
     const onSubmit = async (data: SignUpFormData) => {
         try {
@@ -112,25 +111,13 @@ export default function SignUpPage() {
                         <ValidatedInput
                             label="휴대폰 번호"
                             type="tel"
-                            placeholder="010-1234-1234 또는 01012341234"
+                            placeholder="010-1234-1234"
                             error={errors.phone}
-                            registerReturn={{
-                                ...phoneRegister,
-                                onBlur: async e => {
-                                    // 기존 onBlur 먼저 실행
-                                    if (phoneRegister.onBlur) {
-                                        await phoneRegister.onBlur(e);
-                                    }
-                                    // 입력이 끝났을 때 하이픈 및 모든 비숫자 문자 제거
-                                    const numbersOnly = e.target.value.replace(
-                                        /[^0-9]/g,
-                                        ""
-                                    );
-                                    setValue("phone", numbersOnly, {
-                                        shouldValidate: true,
-                                    });
-                                },
-                            }}
+                            registerReturn={createPhoneRegister(
+                                register("phone"),
+                                setValue,
+                                "phone"
+                            )}
                         />
                         <Button
                             type="submit"

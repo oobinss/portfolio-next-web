@@ -1,8 +1,11 @@
 import { z } from "zod";
+import { removePhoneFormatting, isValidPhoneNumber } from "./utils/phone";
 
 export const signUpSchema = z
     .object({
-        email: z.string().email({ message: "이메일 형식이 올바르지 않습니다." }),
+        email: z
+            .string()
+            .email({ message: "이메일 형식이 올바르지 않습니다." }),
         password: z
             .string()
             .min(8, "비밀번호는 영문, 숫자를 포함하여 8자 이상이어야 합니다.")
@@ -19,14 +22,13 @@ export const signUpSchema = z
             .max(10, "이름은 10자 이하여야 합니다."),
         phone: z
             .union([z.string(), z.undefined()])
-            .transform((val) => {
+            .transform(val => {
                 if (!val || val.trim() === "") return undefined;
-                return val.replace(/[^0-9]/g, ""); // 하이픈 및 모든 비숫자 문자 제거
+                return removePhoneFormatting(val);
             })
-            .refine(
-                (val) => !val || /^[0-9]{9,15}$/.test(val),
-                { message: "휴대폰번호를 올바르게 입력해주세요." }
-            )
+            .refine(val => !val || isValidPhoneNumber(val), {
+                message: "휴대폰번호를 올바르게 입력해주세요.",
+            })
             .optional(),
         nickname: z
             .string()
@@ -54,13 +56,17 @@ export const boardPostSchema = z
     .superRefine((data, ctx) => {
         // 비밀글로 설정하는 경우에만 비밀번호 필수
         // 기존 비밀글을 수정하는 경우는 비밀번호가 없어도 됨 (작성자/관리자는 이미 인증됨)
-        if (data.isSecret && data.password !== null && data.password !== undefined && data.password.trim().length > 0) {
+        if (
+            data.isSecret &&
+            data.password !== null &&
+            data.password !== undefined &&
+            data.password.trim().length > 0
+        ) {
             if (data.password.trim().length < 6) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     path: ["password"],
-                    message:
-                        "비밀번호는 최소 6자 이상이어야 합니다.",
+                    message: "비밀번호는 최소 6자 이상이어야 합니다.",
                 });
             }
         }
@@ -78,12 +84,15 @@ export const inquirySchema = z.object({
         .max(20, "성함은 20자 이하로 입력해주세요."),
     phone: z
         .string()
-        .transform((val) => val?.replace(/[^0-9]/g, "") || "") // 하이픈 및 모든 비숫자 문자 제거
-        .pipe(z.string().regex(/^[0-9]{9,15}$/, "휴대폰번호를 올바르게 입력해주세요.")),
+        .transform(val => removePhoneFormatting(val))
+        .pipe(
+            z.string().refine(isValidPhoneNumber, {
+                message: "휴대폰번호를 올바르게 입력해주세요.",
+            })
+        ),
     email: z.string().email({ message: "이메일 형식이 올바르지 않습니다." }),
     message: z
         .string()
         .min(1, "문의 내용을 입력해주세요.")
         .max(1000, "문의 내용은 1000자 이하로 입력해주세요."),
 });
-

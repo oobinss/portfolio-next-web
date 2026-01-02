@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin } from "lucide-react";
 import type { z } from "zod";
+import { createPhoneRegister } from "../../../lib/utils/formHelpers";
 
 type InquiryFormData = z.infer<typeof inquirySchema>;
 
@@ -27,8 +28,6 @@ export default function ContactPage() {
     } = useForm<InquiryFormData>({
         resolver: zodResolver(inquirySchema),
     });
-
-    const phoneRegister = register("phone");
 
     const onSubmit = async (data: InquiryFormData) => {
         // API 호출 로직
@@ -102,25 +101,13 @@ export default function ContactPage() {
                         <ValidatedInput
                             label="연락처"
                             type="tel"
-                            registerReturn={{
-                                ...phoneRegister,
-                                onBlur: async e => {
-                                    // 기존 onBlur 먼저 실행
-                                    if (phoneRegister.onBlur) {
-                                        await phoneRegister.onBlur(e);
-                                    }
-                                    // 입력이 끝났을 때 하이픈 및 모든 비숫자 문자 제거
-                                    const numbersOnly = e.target.value.replace(
-                                        /[^0-9]/g,
-                                        ""
-                                    );
-                                    setValue("phone", numbersOnly, {
-                                        shouldValidate: true,
-                                    });
-                                },
-                            }}
+                            registerReturn={createPhoneRegister(
+                                register("phone"),
+                                setValue,
+                                "phone"
+                            )}
                             error={errors.phone}
-                            placeholder="010-1234-1234 또는 01012341234"
+                            placeholder="010-1234-1234"
                         />
                         <ValidatedInput
                             label="이메일"
