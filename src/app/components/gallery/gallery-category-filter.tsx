@@ -5,7 +5,7 @@ import GalleryGrid from "@/app/components/gallery/gallery-grid";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Plus } from "lucide-react";
+import { Plus, ArrowRight } from "lucide-react";
 import { useGalleryStore } from "@/lib/stores/galleryStore";
 import { useGalleryItems } from "@/lib/hooks/useGallery";
 import { useMemo } from "react";
@@ -78,14 +78,28 @@ export default function GalleryCategoryFilter({
                 <h2 className="text-2xl sm:text-3xl font-bold text-stone-900">
                     주요 사업영역
                 </h2>
-                {showUploadButton && isAdmin && (
-                    <Link href="/gallery/new" aria-label="새 갤러리 항목 추가하기">
-                        <Button className="gap-2">
-                            <Plus className="h-4 w-4" aria-hidden="true" />
-                            사진 올리기
+                <div className="flex items-center gap-3">
+                    <Link 
+                        href="/gallery" 
+                        aria-label="사업영역 상세페이지로 이동"
+                    >
+                        <Button 
+                            variant="outline" 
+                            className="gap-2 border-stone-300 hover:bg-stone-50"
+                        >
+                            더보기
+                            <ArrowRight className="h-4 w-4" aria-hidden="true" />
                         </Button>
                     </Link>
-                )}
+                    {showUploadButton && isAdmin && (
+                        <Link href="/gallery/new" aria-label="새 갤러리 항목 추가하기">
+                            <Button className="gap-2">
+                                <Plus className="h-4 w-4" aria-hidden="true" />
+                                사진 올리기
+                            </Button>
+                        </Link>
+                    )}
+                </div>
             </div>
             <div className="flex justify-center mb-10">
                 <div

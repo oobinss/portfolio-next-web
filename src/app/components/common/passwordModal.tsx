@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Lock } from "lucide-react";
 import { useVerifyPostPassword } from "@/lib/hooks/usePosts";
-import type { AxiosError } from "axios";
 
 interface PasswordModalProps {
     postId: number;
@@ -21,7 +20,11 @@ interface PasswordModalProps {
     onSuccess: () => void;
 }
 
-export default function PasswordModal({ postId, onClose, onSuccess }: PasswordModalProps) {
+export default function PasswordModal({
+    postId,
+    onClose,
+    onSuccess,
+}: PasswordModalProps) {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [open, setOpen] = useState(true);
@@ -45,7 +48,7 @@ export default function PasswordModal({ postId, onClose, onSuccess }: PasswordMo
                     setOpen(false);
                     onSuccess();
                 },
-                onError: (error) => {
+                onError: () => {
                     setError("비밀번호가 일치하지 않습니다");
                 },
             }
@@ -95,7 +98,9 @@ export default function PasswordModal({ postId, onClose, onSuccess }: PasswordMo
                             autoFocus
                             className={error ? "border-red-500" : ""}
                             aria-invalid={!!error}
-                            aria-describedby={error ? "password-error" : undefined}
+                            aria-describedby={
+                                error ? "password-error" : undefined
+                            }
                         />
                         {error && (
                             <p
@@ -130,5 +135,3 @@ export default function PasswordModal({ postId, onClose, onSuccess }: PasswordMo
         </Dialog>
     );
 }
-
-

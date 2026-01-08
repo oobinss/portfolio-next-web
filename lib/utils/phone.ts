@@ -7,7 +7,9 @@
  * @param phone 전화번호 문자열
  * @returns 숫자만 포함된 전화번호 문자열
  */
-export function removePhoneFormatting(phone: string | undefined | null): string {
+export function removePhoneFormatting(
+    phone: string | undefined | null
+): string {
     if (!phone) return "";
     return phone.replace(/[^0-9]/g, "");
 }
@@ -20,4 +22,5 @@ export function removePhoneFormatting(phone: string | undefined | null): string 
 export function isValidPhoneNumber(phone: string): boolean {
     return /^[0-9]{9,15}$/.test(phone);
 }
+
 

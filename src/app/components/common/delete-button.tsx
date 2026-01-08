@@ -9,7 +9,6 @@ import {
 } from "@/lib/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { postKeys } from "@/lib/hooks/usePosts";
-import type { AxiosError } from "axios";
 
 interface DeleteButtonProps {
     apiPath?: string;
@@ -57,7 +56,7 @@ export default function DeleteButton({
                         // 서버 컴포넌트를 다시 렌더링하여 댓글 목록 갱신
                         router.refresh();
                     },
-                    onError: error => {
+                    onError: () => {
                         toast.error("삭제 실패");
                     },
                 });
@@ -73,7 +72,7 @@ export default function DeleteButton({
                             router.refresh();
                         }
                     },
-                    onError: error => {
+                    onError: () => {
                         toast.error("삭제 실패");
                     },
                 });
@@ -89,7 +88,7 @@ export default function DeleteButton({
                             router.refresh();
                         }
                     },
-                    onError: error => {
+                    onError: () => {
                         toast.error("삭제 실패");
                     },
                 });
