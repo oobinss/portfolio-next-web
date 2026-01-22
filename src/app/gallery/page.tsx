@@ -11,6 +11,7 @@ export default async function GalleryPage() {
             <GalleryCategoryFilter
                 items={galleryItems}
                 showUploadButton={true}
+                showMoreButton={false}
             />
         </Suspense>
     );

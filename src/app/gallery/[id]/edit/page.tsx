@@ -4,12 +4,19 @@ import { toCloudFrontUrl } from "../../../../../lib/gallery";
 import Link from "next/link";
 
 export async function generateStaticParams() {
-    const galleries = await prisma.gallery.findMany({
-        select: { id: true },
-    });
-    return galleries.map(gallery => ({
-        id: gallery.id.toString(),
-    }));
+    try {
+        const galleries = await prisma.gallery.findMany({
+            select: { id: true },
+        });
+        return galleries.map(gallery => ({
+            id: gallery.id.toString(),
+        }));
+    } catch (error) {
+        // 빌드 시 데이터베이스 연결 실패 시 빈 배열 반환
+        // 런타임에는 동적 라우팅으로 처리됨
+        console.warn("Failed to generate static params for gallery edit pages:", error);
+        return [];
+    }
 }
 
 interface EditPageProps {

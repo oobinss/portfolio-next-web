@@ -17,11 +17,13 @@ const categories = ["전체", "음식", "여행", "일상"] as const;
 interface GalleryCategoryFilterProps {
     items?: GalleryListItem[];
     showUploadButton?: boolean;
+    showMoreButton?: boolean;
 }
 
 export default function GalleryCategoryFilter({
     items: initialItems,
     showUploadButton,
+    showMoreButton = true,
 }: GalleryCategoryFilterProps) {
     const { data: session } = useSession();
     const isAdmin = session?.user?.role === "admin";
@@ -79,18 +81,20 @@ export default function GalleryCategoryFilter({
                     주요 사업영역
                 </h2>
                 <div className="flex items-center gap-3">
-                    <Link 
-                        href="/gallery" 
-                        aria-label="사업영역 상세페이지로 이동"
-                    >
-                        <Button 
-                            variant="outline" 
-                            className="gap-2 border-stone-300 hover:bg-stone-50"
+                    {showMoreButton && (
+                        <Link 
+                            href="/gallery" 
+                            aria-label="사업영역 상세페이지로 이동"
                         >
-                            더보기
-                            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                        </Button>
-                    </Link>
+                            <Button 
+                                variant="outline" 
+                                className="gap-2 border-stone-300 hover:bg-stone-50"
+                            >
+                                더보기
+                                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                            </Button>
+                        </Link>
+                    )}
                     {showUploadButton && isAdmin && (
                         <Link href="/gallery/new" aria-label="새 갤러리 항목 추가하기">
                             <Button className="gap-2">
